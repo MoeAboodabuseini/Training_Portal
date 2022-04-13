@@ -23,7 +23,7 @@ class RedirectTo
         }elseif (auth()->user()->role == 'supervisor'){
             return response()->view('supervisors.dash');
         }elseif (auth()->user()->role == 'company'){
-            return response()->view('companies.dash');
+            return redirect('companies');
         }else{
             abort(404);
         }

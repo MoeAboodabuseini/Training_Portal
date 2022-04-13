@@ -1,49 +1,116 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-<body>
-<!-- Right Side Of Navbar -->
-<ul class="navbar-nav ms-auto">
-    <!-- Authentication Links -->
-    @guest
-        @if (Route::has('login'))
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-            </li>
-        @endif
+<x-admin-master>
+    @section('style')
+    <link rel="stylesheet" href="assets/vendor/fonts/boxicons.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+    @endsection
+    @section('content')
+    <div class="container-xxl flex-grow-1 container-p-y">
 
-        @if (Route::has('register'))
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-            </li>
-        @endif
-    @else
-        <li class="nav-item dropdown">
-            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                {{ Auth::user()->name }}
-            </a>
 
-            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="{{ route('logout') }}"
-                   onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                    {{ __('Logout') }}
-                </a>
+        <h4 class="fw-bold py-3 mb-4">
+            <span class="text-muted fw-light">Manage Users /</span> View All Users
+        </h4>
+        <a href="{{route('users.create')}}"> <button class="btn rounded-pill btn-dark mb-2">Create New User</button> </a>
 
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                    @csrf
-                </form>
+        <!-- Ajax Sourced Server-side -->
+        <div class="card" style="width: fit-content">
+            <h5 class="card-header">Users Table</h5>
+            @if(Session('user_deleted'))
+            <div class="alert alert-danger alert-dismissible col-6" role="alert">
+                <h6 class="alert-heading d-flex align-items-center fw-bold mb-1">User Deleted!!</h6>
+                <p class="mb-0">Aww yeah, you successfully Deleted the user.</p>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                </button>
+
             </div>
-        </li>
-    @endguest
-</ul>
+            @elseif(Session('user_updated'))
+            <div class="alert alert-primary alert-dismissible" role="alert">
+                <h6 class="alert-heading d-flex align-items-center fw-bold mb-1">Edit User</h6>
+                <p class="mb-0">You successfully Edited the user.</p>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                </button>
+            </div>
+            @endif
+            <div class="card-datatable text-nowrap">
+                <table id="example" class="table table-striped" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>#id</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>type</th>
+                            <th>skillw</th>
+                            <th>Major</th>
+                            <th>Hours</th>
+                            <th>GPA</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($users as $user)
+                        <tr>
+                            <td>{{$user->user_id}}</td>
+                            <td>{{$user->name}}</td>
+                            <td>{{$user->email?$user->email:''}}</td>
+                            <td>{{$user->Phone?$user->phone:''}}</td>
+                            <td>{{$user->type?$user->type:''}}</td>
+                            <td>{{$user->skills?$user->skills:''}}</td>
+                            <td>{{$user->major?$user->major:''}}</td>
+                            <td>{{$user->hours?$user->hours:''}}</td>
+                            <td>{{$user->GPA?$user->GPA:''}}</td>
 
-I`m company
-</body>
-</html>
+                            <td>
+                                <a href="{{route('users.edit',$user->id)}}">
+                                    <button type="button" class="btn rounded-pill btn-label-info">Edit</button>
+                                </a>
+                            </td>
+                            <td>
+                                <form action="{{route('users.destroy',$user->id)}}" method="post">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn rounded-pill btn-label-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        @endforeach
+
+
+
+
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>#id</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>type</th>
+                            <th>skillw</th>
+                            <th>Major</th>
+                            <th>Hours</th>
+                            <th>GPA</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                        </tr>
+                    </tfoot>
+                </table>
+                </table>
+            </div>
+        </div>
+
+        @endsection
+        @section('script')
+        <script>
+            $(document).ready(function() {
+                $('#example').DataTable();
+            });
+        </script>
+        <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+        <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+        @endsection
+
+</x-admin-master>

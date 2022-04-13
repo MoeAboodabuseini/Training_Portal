@@ -22,6 +22,11 @@ return new class extends Migration
             $table->string('name');
             $table->string('major');
             $table->string('photo');
+            $table->string('seats')->default(5);
+            $table->string('seats')->default('avilable');
+            $table->string('supervisor_name')->nullable();
+            $table->string('supervisor_phone')->nullable();
+            $table->string('supervisor_email')->nullable();
             $table->timestamp('created_at')->useCurrent();
         });
     }

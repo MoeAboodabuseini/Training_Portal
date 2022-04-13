@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('supervisor_id')->nullable();
             $table->string('admin_id');
             $table->string('company_id');
+            $table->string('status')->nullable();
+            $table->string('note ')->nullable();
             $table->timestamp('agreed_at')->useCurrent();
             $table->timestamp('finished_at')->nullable();//8 weeks
         });
