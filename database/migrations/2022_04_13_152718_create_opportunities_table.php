@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('major');
             $table->string('photo');
             $table->string('seats')->default(5);
-            $table->string('seats')->default('avilable');
+            $table->string('staus')->default('avilable');
             $table->string('supervisor_name')->nullable();
             $table->string('supervisor_phone')->nullable();
             $table->string('supervisor_email')->nullable();
