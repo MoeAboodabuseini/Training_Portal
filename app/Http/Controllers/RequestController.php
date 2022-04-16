@@ -2,8 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Request;
+use App\Models\Agreed;
+use App\Models\Requested;
+use Carbon\Carbon;
+use Dflydev\DotAccessData\Data;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class RequestController extends Controller
 {
@@ -41,21 +48,21 @@ class RequestController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @return Application|Factory|View
      */
-    public function show(Request $request)
+    public function show($id)
     {
-        //
+            $requests = DB::table('requests')->where('company_id',$id)->where('status',1)->get();
+            return view('companies.requests',compact('requests'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function edit(Request $request)
+    public function edit(Requested $request)
     {
         //
     }
@@ -64,12 +71,24 @@ class RequestController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, Request $request)
+    public function update(Request $request, $id)
     {
-        //
+        $req = Requested::find($id);
+        $req->status = $request->status;
+        $req->save();
+        if($request->status==4){
+            $agreed = new Agreed();
+            $agreed->user_id = $req->user_id;
+            $agreed->opportunity_id = $req->opportunity_id;
+            $agreed->company_id = $req->company_id;
+            $agreed->finished_at = Carbon::now()->addMonths(2);
+            $agreed->admin_id = 1;
+            $agreed->supervisor_id = 1;
+            $agreed->save();
+        }
+         return redirect('show/requests/{auth()->user()->id}');
     }
 
     /**
@@ -78,8 +97,16 @@ class RequestController extends Controller
      * @param  \App\Models\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy($id)
     {
         //
+    }
+    public function showAccepted(){
+        $requests = DB::table('requests')->where('company_id',auth()->user()->id)->where('status',4)->get();
+        return view('companies.requests',compact('requests'));
+    }
+    public function showRejected(){
+        $requests = DB::table('requests')->where('company_id',auth()->user()->id)->where('status',3)->get();
+        return view('companies.requests',compact('requests'));
     }
 }

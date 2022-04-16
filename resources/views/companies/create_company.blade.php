@@ -150,8 +150,8 @@
                     </div>
                     <div class="bs-stepper-content">
                         <form id="multiStepsForm" enctype="multipart/form-data"  method="post" action="{{route('companies.store')}}">
-                            @csrf
-                            <!-- Account Details -->
+                        @csrf
+                        <!-- Account Details -->
                             <div id="accountDetailsValidation" class="content">
                                 <div class="content-header mb-3">
                                     <h3 class="mb-1">Account Information</h3>

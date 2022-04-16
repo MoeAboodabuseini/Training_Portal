@@ -16,12 +16,12 @@ class CompaniesController extends Controller
      *
      * @return Application|Factory|View
      */
+
     public function index(): View|Factory|Application
     {
         $companies = User::all()->where('role','company');
         return \view('admin.companies.companies',compact('companies'));
     }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -68,7 +68,9 @@ class CompaniesController extends Controller
      */
     public function show($id)
     {
-        //
+
+        $company = User::find($id);
+        return \view('companies.dash',compact('company'));
     }
 
     /**

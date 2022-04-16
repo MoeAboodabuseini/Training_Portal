@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('user_id');
             $table->string('opportunity_id');
+            $table->string('company_id');
             $table->string('status');
             $table->timestamp('created_at')->useCurrent();
 

@@ -7,5 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Bonus extends Model
 {
+    public $timestamps = false;
+
     use HasFactory;
 }

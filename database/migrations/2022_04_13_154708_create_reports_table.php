@@ -15,10 +15,11 @@ return new class extends Migration
     {
         Schema::create('reports', function (Blueprint $table) {
             $table->id();
-            $table->string('agreed_id');
+            $table->foreignId('agreed_id')->constrained()->onDelete('cascade');
             $table->string('report');
             $table->string('notes');
             $table->string('status');
+            $table->string('company_id')->nullable();
             $table->timestamp('created_at');
 
         });

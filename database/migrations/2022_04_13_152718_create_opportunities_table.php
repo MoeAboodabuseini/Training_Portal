@@ -16,17 +16,17 @@ return new class extends Migration
         Schema::create('opportunities', function (Blueprint $table) {
 
             $table->id();
-            $table->string('company_id');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('starting_date');
             $table->string('details');
             $table->string('name');
             $table->string('major');
             $table->string('photo');
-            $table->string('seats')->default(5);
-            $table->string('staus')->default('avilable');
-            $table->string('supervisor_name')->nullable();
-            $table->string('supervisor_phone')->nullable();
-            $table->string('supervisor_email')->nullable();
+            $table->string('seats');
+            $table->string('status')->default('available');
+            $table->string('supervisor_name');
+            $table->string('supervisor_email');
+            $table->string('supervisor_phone');
             $table->timestamp('created_at')->useCurrent();
         });
     }

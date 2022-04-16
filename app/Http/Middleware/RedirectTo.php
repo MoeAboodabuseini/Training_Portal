@@ -12,7 +12,7 @@ class RedirectTo
      *
      * @param \Illuminate\Http\Request $request
      * @param \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
-     * @return \Illuminate\Http\Response
+
      */
     public function handle(Request $request, Closure $next)
     {
@@ -23,7 +23,7 @@ class RedirectTo
         }elseif (auth()->user()->role == 'supervisor'){
             return response()->view('supervisors.dash');
         }elseif (auth()->user()->role == 'company'){
-            return redirect('companies');
+            return redirect()->route('companies.show',auth()->user()->id);
         }else{
             abort(404);
         }

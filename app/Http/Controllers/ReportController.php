@@ -42,11 +42,12 @@ class ReportController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Report  $report
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function show(Report $report)
+    public function show($id)
     {
-        //
+        $reports = Report::all()->where('company_id',$id);
+        return view('companies.reports',compact('reports'));
     }
 
     /**
