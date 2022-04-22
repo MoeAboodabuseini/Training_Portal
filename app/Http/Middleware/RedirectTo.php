@@ -17,16 +17,19 @@ class RedirectTo
     public function handle(Request $request, Closure $next)
     {
         if (auth()->user()->role == 'user') {
-            return response()->view('users.dash');
-        }elseif (auth()->user()->role == 'admin'){
+            if ((int)(auth()->user()->hours) >=120) {
+                return redirect()->route('studentProfileShow');
+            } else {
+                abort(401);
+            }
+        } elseif (auth()->user()->role == 'admin') {
             return response()->view('admins.dash');
-        }elseif (auth()->user()->role == 'supervisor'){
+        } elseif (auth()->user()->role == 'supervisor') {
             return response()->view('supervisors.dash');
-        }elseif (auth()->user()->role == 'company'){
-            return redirect()->route('companies.show',auth()->user()->id);
-        }else{
-            abort(404);
+        } elseif (auth()->user()->role == 'company') {
+            return redirect()->route('show_opp', auth()->user()->id);
+        } else {
+            abort(401);
         }
-
     }
 }

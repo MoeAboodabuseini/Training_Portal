@@ -123,4 +123,5 @@
             <!-- /Login -->
         </div>
     @endsection
+    
 </x-login-master>

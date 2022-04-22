@@ -57,8 +57,11 @@
     <link rel="stylesheet" href="{{asset('../../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css')}}"/>
     <link rel="stylesheet" href="{{asset('../../assets/vendor/libs/typeahead-js/typeahead.css')}}"/>
     <link rel="stylesheet" href="{{asset('../../assets/vendor/libs/apex-charts/apex-charts.css')}}"/>
+    <link rel="stylesheet" href="{{asset('../../assets/vendor/libs/tagify/tagify.css')}}"/>
+
     @yield('style')
     <link rel="stylesheet" href="{{asset('assets/css/custom.css')}}">
+
     <!-- Page CSS -->
 
     <!-- Helpers -->
@@ -86,9 +89,9 @@
     <!-- beautify ignore:end -->
 
 </head>
-@include('sweetalert::alert')
-<body>
 
+<body style="overflow-x: hidden">
+@include('sweetalert::alert')
 
 <!-- Layout wrapper -->
 <div class="layout-wrapper layout-content-navbar  ">
@@ -113,58 +116,36 @@
             <ul class="menu-inner py-1">
                 <!-- Apps & Pages -->
                 <li class="menu-header small text-uppercase">
-                    <span class="menu-header-text">Manage</span>
+                    <span class="menu-header-text">Profile</span>
                 </li>
                 <li class="menu-item">
                     <a href="javascript:void(0);" class="menu-link menu-toggle">
                         <i class="menu-icon tf-icons bx bx-user"></i>
-                        <div data-i18n="Manage Opportunities">Manage Opportunities</div>
+                        <div data-i18n="User Profile">  Profile</div>
                     </a>
                     <ul class="menu-sub">
                         <li class="menu-item">
-                            <a href="{{route('create_opp')}}" class="menu-link">
-                                <div data-i18n="Create Opportunity">Create Opportunity</div>
+                            <a href="{{route('studentProfileShow')}}" class="menu-link">
+                                <div data-i18n="User Profile">User Profile</div>
                             </a>
                         </li>
-                        <li class="menu-item">
-                            <a href="{{route('show_opp',auth()->user()->id)}}" class="menu-link">
-                                <div data-i18n="View All Opportunities">View All Opportunities</div>
-                            </a>
-                        </li>
+
                     </ul>
                 </li>
                 <li class="menu-item">
                     <a href="javascript:void(0);" class="menu-link menu-toggle">
-                        <i class="menu-icon tf-icons bx bx-user"></i>
-                        <div data-i18n="Manage Reports">Manage Reports</div>
+                        <i class='menu-icon tf-icons bx bx-check-shield'></i>
+                        <div data-i18n="Opportunities and requests">Opportunities and requests </div>
                     </a>
                     <ul class="menu-sub">
                         <li class="menu-item">
-                            <a href="{{route('show_report',auth()->user()->id)}}" class="menu-link">
-                                <div data-i18n="View All Reports">View All Reports</div>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="menu-item">
-                    <a href="javascript:void(0);" class="menu-link menu-toggle">
-                        <i class="menu-icon tf-icons bx bx-user"></i>
-                        <div data-i18n="Manage Requests">Manage Requests</div>
-                    </a>
-                    <ul class="menu-sub">
-                        <li class="menu-item">
-                            <a href="{{route('show_request',auth()->user()->id)}}" class="menu-link">
-                                <div data-i18n="View Pending Requests">View Pending Requests</div>
+                            <a href="{{route('showAllOpp')}}" class="menu-link">
+                                <div data-i18n="Opportunities">Opportunities</div>
                             </a>
                         </li>
                         <li class="menu-item">
-                            <a href="{{route('showAccepted_request')}}" class="menu-link">
-                                <div data-i18n="Show Accepted Requests">Show Accepted Requests</div>
-                            </a>
-                        </li>
-                        <li class="menu-item">
-                            <a href="{{route('showRejected_request')}}" class="menu-link">
-                                <div data-i18n="Show Rejected Requests">Show Rejected Requests</div>
+                            <a href="{{route('showUserRequest')}}" class="menu-link">
+                                <div data-i18n="Requests">Requests</div>
                             </a>
                         </li>
                     </ul>
@@ -173,20 +154,19 @@
                     <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                         {{ Auth::user()->name }}
                     </a>
-        
+
                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="{{ route('logout') }}"
                            onclick="event.preventDefault();
                                                              document.getElementById('logout-form').submit();">
                             {{ __('Logout') }}
                         </a>
-        
+
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                             @csrf
                         </form>
                     </div>
                 </li>
-
             </ul>
         </aside>
         <!-- / Menu -->
@@ -768,6 +748,8 @@
 
 <!-- Page JS -->
 <script src="{{asset('../../assets/js/dashboards-analytics.js')}}"></script>
+<script src="{{asset('../../assets/vendor/libs/tagify/tagify.js')}}"></script>
+<script src="{{asset('../../assets/js/forms-tagify.js')}}"></script>
 @yield('script')
 </body>
 

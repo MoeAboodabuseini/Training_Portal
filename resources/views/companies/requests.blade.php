@@ -59,7 +59,7 @@
                                     <form action="{{route('update_request',$request->id)}}" method="post" id="status_form">
                                         @csrf
                                         @method('PUT')
-                                        @if($request->status==1)
+                                        @if($request->status==2)
                                         <select name="status" id="" onchange="formSubmit()">
                                             <option selected disabled>Choose one</option>
                                             <option value="4">ACCEPT</option>

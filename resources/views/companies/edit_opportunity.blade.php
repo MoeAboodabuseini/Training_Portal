@@ -1,4 +1,3 @@
-{{--@dd('ahmad')--}}
 <x-company-master>
 
     @include('sweetalert::alert')

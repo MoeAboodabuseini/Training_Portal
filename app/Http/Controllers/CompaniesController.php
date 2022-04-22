@@ -7,7 +7,9 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class CompaniesController extends Controller
 {
@@ -57,6 +59,7 @@ class CompaniesController extends Controller
         $company->website = $request->website;
         $company->phone = $request->phone;
         $company->save();
+        Auth::guard()->login($company);
         return view ('companies.dash');
     }
 
@@ -105,5 +108,9 @@ class CompaniesController extends Controller
     public function destroy($id)
     {
         //
+    }
+    public function alertUser (){
+        Alert::success('Request', 'The Request sent Successfully , stay near to know the result after admin and company review');
+        return \view('users.dash');
     }
 }

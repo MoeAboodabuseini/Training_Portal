@@ -12,5 +12,7 @@ class Requested extends Model
 
     protected $table = 'requests';
 
+
+
     use HasFactory;
 }

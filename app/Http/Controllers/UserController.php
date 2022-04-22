@@ -96,7 +96,7 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -105,5 +105,16 @@ class UserController extends Controller
         $user->delete();
         Alert::error('User', 'The User Deleted Successfully');
         return redirect('users');
+    }
+
+    public function studentProfile(Request $request)
+    {
+        $user = User::find(auth()->user()->id);
+        $user->email = $request->email;
+        $user->location = $request->location;
+        $user->phone = $request->phone;
+        $user->skills = $request->skills;
+        $user->save();
+        return back();
     }
 }

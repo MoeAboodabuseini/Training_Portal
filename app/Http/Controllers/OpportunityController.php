@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Opportunity;
+use App\Models\Requested;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -16,11 +17,13 @@ class OpportunityController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Application|Factory|View
      */
-    public function index()
+    public function index(): View|Factory|Application
     {
-        //
+        $opportunities = Opportunity::with('company')->latest()->paginate(3);
+        $request = Requested::all()->where('user_id',auth()->user()->id)->whereIn('status', [0, 2, 4,5])->toArray();
+        return view('users.dash', compact('opportunities','request'));
     }
 
     /**
@@ -42,15 +45,15 @@ class OpportunityController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $file = $request->photo;
-        $new_file = time().$file->getClientOriginalName();
+        $new_file = time() . $file->getClientOriginalName();
         $file->move('assets/img/opportunities', $new_file);
-        $pathOf = 'assets/img/opportunities/'.$new_file;
+        $pathOf = 'assets/img/opportunities/' . $new_file;
         $opportunity = new Opportunity();
-        $opportunity->user_id	 = auth()->user()->id;
+        $opportunity->user_id     = auth()->user()->id;
         $opportunity->starting_date = $request->starting_date;
         $opportunity->details = $request->details;
         $opportunity->name = $request->name;
-        $opportunity->major = $request->major;
+        $opportunity->major = strtolower($request->major);
         $opportunity->supervisor_name = $request->supervisor_name;
         $opportunity->supervisor_email = $request->supervisor_email;
         $opportunity->supervisor_phone = $request->supervisor_phone;
@@ -58,7 +61,7 @@ class OpportunityController extends Controller
         $opportunity->photo = $pathOf;
         $opportunity->save();
         Alert::success('Opportunity', 'The Opportunity Added Successfully');
-        return redirect()->route('show_opp',auth()->user()->id);
+        return redirect()->route('show_opp', auth()->user()->id);
     }
 
     /**
@@ -69,8 +72,8 @@ class OpportunityController extends Controller
      */
     public function show($id)
     {
-        $opportunities = Opportunity::all()->where('user_id',$id);
-        return view('companies.opportunities',compact('opportunities'));
+        $opportunities = Opportunity::all()->where('user_id', $id);
+        return view('companies.opportunities', compact('opportunities'));
     }
 
     /**
@@ -82,7 +85,7 @@ class OpportunityController extends Controller
     public function edit($id)
     {
         $opportunity = Opportunity::find($id);
-        return \view('companies.edit_opportunity',compact('opportunity'));
+        return \view('companies.edit_opportunity', compact('opportunity'));
     }
 
     /**
@@ -106,16 +109,16 @@ class OpportunityController extends Controller
         $opportunity->supervisor_phone = $request->supervisor_phone;
         $opportunity->seats = $request->seats;
         $opportunity->status = $request->status;
-        if($request->hasFile('photo')){
-        $file = $request->photo;
-        $new_file = time().$file->getClientOriginalName();
-        $file->move('assets/img/opportunities', $new_file);
-        $pathOf = 'assets/img/opportunities/'.$new_file;
-        $opportunity->photo = $pathOf;
+        if ($request->hasFile('photo')) {
+            $file = $request->photo;
+            $new_file = time() . $file->getClientOriginalName();
+            $file->move('assets/img/opportunities', $new_file);
+            $pathOf = 'assets/img/opportunities/' . $new_file;
+            $opportunity->photo = $pathOf;
         }
         $opportunity->save();
         Alert::success('Opportunity', 'The Opportunity edited Successfully');
-        return redirect()->route('show_opp',auth()->user()->id);
+        return redirect()->route('show_opp', auth()->user()->id);
     }
 
     /**
@@ -126,8 +129,8 @@ class OpportunityController extends Controller
      */
     public function destroy($id)
     {
-        $req =DB::table('requests')->where('opportunity_id', $id)->get();
-        if(count($req)>0){
+        $req = DB::table('requests')->where('opportunity_id', $id)->get();
+        if (count($req) > 0) {
             Alert::error('Opportunity', 'You Cant Delete This Opportunity');
             return back();
         }
@@ -135,5 +138,21 @@ class OpportunityController extends Controller
         $opp->delete();
         Alert::error('Opportunity', 'You  Delete This Opportunity');
         return back();
+    }
+    public function showToUser($id)
+    {
+        $opportunities = Opportunity::with('company')->where('id',$id)->get();
+        Alert::success('Request', 'The Request sent Successfully , stay near to know the result after admin and company review');
+
+        return view('users.dash', compact('opportunities'));
+    }
+    public function filterOpportunities (Request $request){
+        if($request->filter=='all'){
+
+            return redirect('showAllOpp');
+        }
+        $search = $request->filter;
+        $opportunities = Opportunity::with('company')->where('major', 'LIKE', "%{$search}%")->paginate(3);
+        return view('users.dash', compact('opportunities'));
     }
 }

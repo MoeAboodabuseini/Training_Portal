@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use RealRashid\SweetAlert\Facades\Alert;
 use App\Models\Agreed;
+use App\Models\Opportunity;
 use App\Models\Requested;
 use Carbon\Carbon;
-use Dflydev\DotAccessData\Data;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
 class RequestController extends Controller
 {
     /**
@@ -53,7 +53,7 @@ class RequestController extends Controller
      */
     public function show($id)
     {
-            $requests = DB::table('requests')->where('company_id',$id)->where('status',1)->get();
+            $requests = DB::table('requests')->where('company_id',$id)->where('status',2)->get();
             return view('companies.requests',compact('requests'));
     }
 
@@ -108,5 +108,24 @@ class RequestController extends Controller
     public function showRejected(){
         $requests = DB::table('requests')->where('company_id',auth()->user()->id)->where('status',3)->get();
         return view('companies.requests',compact('requests'));
+    }
+    public function clickRequest($id)
+    {
+        $opportunity = Opportunity::with('company')->where('id',$id)->get()->first();
+        $request = new Requested();
+        $request->user_id = auth()->user()->id;
+        $request->opportunity_id = $opportunity->id;
+        $request->company_id = $opportunity->company->id;
+        $request->status = 0;
+        $request->save();
+        session('alert','yes');
+        return \view('users.note');
+    }
+    public function showUserRequest(){
+        $id = auth()->user()->id;
+        $inProcess = Requested::all()->where('user_id',$id)->whereIn('status', [0, 2]);
+        $rejected = Requested::all()->where('user_id',$id)->whereIn('status',[1,3]);
+        $accepted = Requested::all()->where('user_id',$id)->where('status',4);
+        return \view('users.requests',compact('inProcess','rejected','accepted'));
     }
 }

@@ -9,7 +9,8 @@ class Opportunity extends Model
 {
     public $timestamps = false;
     use HasFactory;
-    public function company (){
-        return $this->belongsTo(User::class);
+    public function company (): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(User::class,'user_id','id');
     }
 }

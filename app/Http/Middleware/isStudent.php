@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 
-class isCompany
+class isStudent
 {
     /**
      * Handle an incoming request.
@@ -16,11 +16,14 @@ class isCompany
      */
     public function handle(Request $request, Closure $next)
     {
-        if(auth()->user()->role=='company'){
-            return $next($request);
+        if(auth()->user()->role=='user'){
+            if ((int)(auth()->user()->hours) >= 120) {
+                return $next($request);
+            } else {
+                abort(401);
+            }
         }else{
             abort(401);
         }
-
     }
 }
